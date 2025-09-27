@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:rate_my_match_v2/view/home/home_binding.dart';
 import '../view/home/home_view.dart';
 
 part 'app_routes.dart'; // Importante: enlaza con app_routes.dart
@@ -11,7 +12,7 @@ class AppPages {
     GetPage(
       name: Routes.HOME,
       page: () => HomeView(),
-
+      binding: HomeBinding()
     ),
 
   ];
