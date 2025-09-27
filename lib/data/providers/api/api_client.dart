@@ -15,15 +15,14 @@ class ApiClient extends GetxService {
   ///
   final http.Client _httpClient;
   ///
-  final Logger _logger;
+  final Logger logger;
   ///
-  ApiClient({http.Client? httpClient,required Logger logger})
+  ApiClient({http.Client? httpClient,required this.logger})
       : _httpClient = httpClient ?? http.Client(),
-        _baseUrl = 'https://www.thesportsdb.com/api/v1/json/',
-        _logger = logger;
+        _baseUrl = 'https://www.thesportsdb.com/api/v1/json/';
 
   Future<ApiClient> init() async {
-    _logger.i("ApiClient inicializado para TheSportsDB");
+    logger.i("ApiClient inicializado para TheSportsDB");
     return this;
   }
 
@@ -45,7 +44,7 @@ class ApiClient extends GetxService {
 
   Future<dynamic> get(String endpoint, {Map<String, dynamic>? queryParameters}) async {
     final uri = _buildUri(endpoint, queryParameters: queryParameters);
-    _logger.i('GET Request: $uri');
+    logger.i('GET Request: $uri');
 
     try {
       final response = await _httpClient.get(
@@ -56,11 +55,11 @@ class ApiClient extends GetxService {
     } on TimeoutException {
       throw NetworkException(AppString.timeOutExceptionMessage);
     } on http.ClientException catch (e) {
-      _logger.e('ClientException en GET: ${e.message}');
+      logger.e('ClientException en GET: ${e.message}');
       throw NetworkException(AppString.networkExceptionMessage);
     } catch (e) {
       // Para errores inesperados antes de _processResponse
-      _logger.i('Error desconocido en GET: $e');
+      logger.i('Error desconocido en GET: $e');
       if (e is ApiException) rethrow; // Si ya es una de nuestras excepciones
       throw ApiException(AppString.unexpectedExceptionMessage);
     }
@@ -68,16 +67,16 @@ class ApiClient extends GetxService {
 
   dynamic _processResponse(http.Response response) {
     final String responseBody = utf8.decode(response.bodyBytes);
-    _logger.i('Response Status: ${response.statusCode}');
+    logger.i('Response Status: ${response.statusCode}');
     // Loguear solo una parte del body si es muy largo
-    _logger.i('Response Body incomplete to optimize: ${responseBody.substring(0, responseBody.length > 300 ? 300 : responseBody.length)}...');
+    logger.i('Response Body incomplete to optimize: ${responseBody.substring(0, responseBody.length > 300 ? 300 : responseBody.length)}...');
 
     final decodedJson = responseBody.isNotEmpty ? jsonDecode(responseBody) : null;
 
     switch (response.statusCode) {
       case 200:
         if (decodedJson == null) {
-          _logger.i("Warning: Received empty body for a 200 response from ${response.request?.url}");
+          logger.i("Warning: Received empty body for a 200 response from ${response.request?.url}");
         }
         return decodedJson;
       case 400:

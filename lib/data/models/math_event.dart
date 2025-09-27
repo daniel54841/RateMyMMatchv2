@@ -8,7 +8,7 @@ import 'package:rate_my_match_v2/data/models/team_info.dart';
 
 import 'event.dart'; // Para @required o required en versiones antiguas
 
-class Match {
+class MatchEvent {
   ///Identificador único del evento en TheSportsDB. Original: idEvent
   final String id; //
 
@@ -30,7 +30,7 @@ class Match {
   final MultimediaInfoEvent multimediaInfoEvent;
 
   ///
-  Match({
+  MatchEvent({
     required this.id,
     required this.event,
     required this.seasonInfo,
@@ -42,8 +42,8 @@ class Match {
   });
 
   ///
-  factory Match.fromJson(Map<String, dynamic> json) {
-    return Match(
+  factory MatchEvent.fromJson(Map<String, dynamic> json) {
+    return MatchEvent(
       id: json['idEvent'] ?? '',
       event: Event.fromJson(json),
       seasonInfo: LeagueSeasonInfo.fromJson(json),
