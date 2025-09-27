@@ -4,29 +4,14 @@ class AppColors {
   ///
   /// Hexadecimal value: #11425D
   ///
-  static const primaryColor = Color.from(
-    alpha: 1,
-    red: 17,
-    green: 66,
-    blue: 93,
-  );
+  static const primaryColor = Color(0xFF11425D);
 
   ///
   /// Hexadecimal value: #DDFFF55
   ///
-  static const secondaryColor = Color.from(
-    alpha: 1,
-    red: 221,
-    green: 255,
-    blue: 85,
-  );
+  static const secondaryColor = Color(0xFFDDFF55);
   ///
   /// Hexadecimal value: #F6F2E8
   ///
-  static const textColor = Color.from(
-    alpha: 1,
-    red: 246,
-    green: 242,
-    blue: 232,
-  );
+  static const textColor = Color(0xFFF6F2E8);
 }

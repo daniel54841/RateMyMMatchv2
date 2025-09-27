@@ -53,7 +53,7 @@ class EventRepositoryRemote extends EventRepository{
 
       // 2. Filtrar ligas por el país deseado (ignorando mayúsculas/minúsculas)
       final List<League> countryLeagues = allLeagues.where((league) {
-        return league.strCountry?.toLowerCase() == countryName.toLowerCase();
+        return league.strLeague.split(' ').first.toLowerCase() == countryName.toLowerCase();
       }).toList();
 
       if (countryLeagues.isEmpty) {
