@@ -19,8 +19,14 @@ class HomeView extends GetView<HomeController> {
       backgroundColor: AppColors.primaryColor,
       appBar: AppBar(
         backgroundColor: AppColors.primaryColor, // AppStrings.eventsScreenTitle
-        title:
-            Row(
+        title: Text(
+          'RATE MY MATCH',
+          style: Get.textTheme.titleLarge?.copyWith(
+            color: AppColors.textColor,
+          ),
+        ),
+
+        /*Row(
               children: [
                 Expanded(
                   child: TextField(
@@ -43,14 +49,11 @@ class HomeView extends GetView<HomeController> {
                   child: Text("Buscar"), // AppStrings.searchButton
                 ),
               ],
-            ),
-
+            ),*/
         actions: [
           IconButton(
             icon: Icon(Icons.refresh, color: AppColors.textColor),
-            onPressed: () {
-
-            },
+            onPressed: () {},
           ),
         ],
       ),
@@ -60,6 +63,73 @@ class HomeView extends GetView<HomeController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      'PARTIDOS',
+                      style: Get.textTheme.titleLarge?.copyWith(
+                        color: AppColors.textColor,
+                      ),),
+                  ),
+                  Flexible(
+                    child: Obx(() {
+                      if (controller.isLoadingLeagues.value && controller.allLeagues.isEmpty) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (controller.leaguesError.value.isNotEmpty) {
+                        return Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(controller.leaguesError.value, style: const TextStyle(color: Colors.red)),
+                              const SizedBox(height: 8),
+                              ElevatedButton(
+                                onPressed: controller.fetchAllLeagues,
+                                child: const Text("Reintentar cargar ligas"),
+                              )
+                            ],
+                          ),
+                        );
+                      }
+                      if (controller.allLeagues.isEmpty && !controller.isLoadingLeagues.value) {
+                        return const Center(child: Text("No hay ligas disponibles."));
+                      }
+
+
+                      return DropdownButtonFormField<League>(
+                        decoration: InputDecoration(
+                          labelText: 'Selecciona una Liga',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8.0),
+                        ),
+                        isExpanded: true, // Para que ocupe el ancho disponible
+                        hint: const Text('Elige una liga...'), // Texto cuando no hay nada seleccionado
+                        value: controller.selectedLeague.value, // La liga actualmente seleccionada
+                        icon: const Icon(Icons.arrow_drop_down_rounded),
+                        items: controller.allLeagues.map<DropdownMenuItem<League>>((League league) {
+                          return DropdownMenuItem<League>(
+                            value: league, // El objeto League completo
+                            child: Text(
+                              league.strLeague, // Muestra el nombre de la liga
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (League? newValue) {
+                          controller.onLeagueSelected(newValue);
+                        },
+                        // Opcional: añadir validación
+                        // validator: (value) => value == null ? 'Por favor selecciona una liga' : null,
+                      );
+                    }),
+                  ),
+                ],
+
+              ),
+              SizedBox(height: 40,),
               // Lista de Partidos
               Obx(() {
                 if (controller.isLoadingMatches.value) {
@@ -86,13 +156,14 @@ class HomeView extends GetView<HomeController> {
                   return SizedBox.shrink(); // No mostrar nada si no hay búsqueda activa o resultados
                 }
 
-
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       controller.currentSearchTerm.value,
-                      style: Get.textTheme.titleSmall?.copyWith(color: Colors.white,),
+                      style: Get.textTheme.titleSmall?.copyWith(
+                        color: Colors.white,
+                      ),
                     ),
                     SizedBox(height: 8),
                     ListView.builder(
@@ -132,7 +203,7 @@ class HomeView extends GetView<HomeController> {
                   ],
                 );
               }),
-              SizedBox(height: 30),
+
 
               // --- Sección para Listar Todas las Ligas (Ejemplo) ---
               /*Row(
