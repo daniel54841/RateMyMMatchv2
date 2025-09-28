@@ -86,7 +86,7 @@ class HomeController extends GetxController {
       matchesError.value = "ID de liga no válido.";
       return;
     }
-    currentSearchTerm.value = "Partidos de la liga: $leagueName";
+    currentSearchTerm.value = leagueName;
     isLoadingMatches.value = true;
     matchesError.value = '';
     matches.clear(); // Limpiar resultados anteriores
@@ -153,7 +153,7 @@ class HomeController extends GetxController {
       matchesError.value = "ID de liga no válido.";
       return;
     }
-    currentSearchTerm.value = "Partidos de la liga: $leagueName";
+    currentSearchTerm.value = leagueName;
     isLoadingMatches.value = true;
     matchesError.value = '';
     matches.clear();
