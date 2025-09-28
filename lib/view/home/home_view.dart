@@ -60,7 +60,7 @@ class HomeView extends GetView<HomeController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-
+              // Lista de Partidos
               Obx(() {
                 if (controller.isLoadingMatches.value) {
                   return Center(child: CircularProgressIndicator());
@@ -86,19 +86,17 @@ class HomeView extends GetView<HomeController> {
                   return SizedBox.shrink(); // No mostrar nada si no hay búsqueda activa o resultados
                 }
 
-                // Lista de Partidos
+
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       controller.currentSearchTerm.value,
-                      style: Get.textTheme.titleSmall?.copyWith(color: Colors.white),
+                      style: Get.textTheme.titleSmall?.copyWith(color: Colors.white,),
                     ),
                     SizedBox(height: 8),
                     ListView.builder(
                       shrinkWrap: true,
-                      physics:
-                          NeverScrollableScrollPhysics(), // Para usar dentro de SingleChildScrollView
                       itemCount: controller.matches.length,
                       itemBuilder: (context, index) {
                         final MatchEvent match = controller.matches[index];
@@ -137,7 +135,7 @@ class HomeView extends GetView<HomeController> {
               SizedBox(height: 30),
 
               // --- Sección para Listar Todas las Ligas (Ejemplo) ---
-              Row(
+              /*Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text("Todas las Ligas", style: Get.textTheme.titleMedium),
@@ -197,7 +195,7 @@ class HomeView extends GetView<HomeController> {
                     );
                   },
                 );
-              }),
+              }),*/
             ],
           ),
         ),
