@@ -26,30 +26,6 @@ class HomeView extends GetView<HomeController> {
           ),
         ),
 
-        /*Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _countryController,
-                    decoration: InputDecoration(
-                      hintText:
-                      "Buscador de partidos por pais", // AppStrings.countrySearchHint
-                      border: OutlineInputBorder(),
-                      hintStyle: TextStyle(color: AppColors.textColor)
-                    ),
-                    onSubmitted: (value) =>
-                        controller.fetchMatchesByCountry(value),
-                  ),
-                ),
-                SizedBox(width: 8),
-                ElevatedButton(
-                  onPressed: () {
-                    controller.fetchMatchesByCountry(_countryController.text);
-                  },
-                  child: Text("Buscar"), // AppStrings.searchButton
-                ),
-              ],
-            ),*/
         actions: [
           IconButton(
             icon: Icon(Icons.refresh, color: AppColors.textColor),
@@ -206,67 +182,7 @@ class HomeView extends GetView<HomeController> {
 
 
               // --- Sección para Listar Todas las Ligas (Ejemplo) ---
-              /*Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("Todas las Ligas", style: Get.textTheme.titleMedium),
-                  ElevatedButton(
-                    onPressed: controller.fetchAllLeagues,
-                    child: Text("Cargar Ligas"), // AppStrings.loadLeaguesButton
-                  ),
-                ],
-              ),
-              Obx(() {
-                if (controller.isLoadingLeagues.value) {
-                  return Center(child: CircularProgressIndicator());
-                }
-                if (controller.leaguesError.value.isNotEmpty) {
-                  return Center(
-                    child: Text(
-                      controller.leaguesError.value,
-                      style: TextStyle(color: Colors.red),
-                      textAlign: TextAlign.center,
-                    ),
-                  );
-                }
-                if (controller.allLeagues.isEmpty) {
-                  return Center(
-                    child: Text("Presiona 'Cargar Ligas' para verlas."),
-                  ); // AppStrings.pressToLoadLeagues
-                }
 
-                // Lista de Ligas
-                return ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: controller.allLeagues.length,
-                  itemBuilder: (context, index) {
-                    final League league = controller.allLeagues[index];
-                    return Card(
-                      margin: EdgeInsets.symmetric(vertical: 4),
-                      child: ListTile(
-                        leading: Image.network(
-                          league.strLeague,
-                          width: 40,
-                          errorBuilder: (c, e, s) => Icon(Icons.shield),
-                        ),
-                        title: Text(league.strLeague),
-                        subtitle: Text(
-                          league.strSport ?? 'Deporte Desconocido',
-                        ),
-                        trailing: Icon(Icons.arrow_forward_ios, size: 14),
-                        onTap: () {
-                          // Al seleccionar una liga, buscar sus partidos
-                          controller.fetchMatchesByLeagueId(
-                            league.idLeague,
-                            league.strLeague,
-                          );
-                        },
-                      ),
-                    );
-                  },
-                );
-              }),*/
             ],
           ),
         ),

@@ -1,5 +1,6 @@
 // lib/app/modules/events/controllers/events_controller.dart
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:rate_my_match_v2/data/models/math_event.dart';
 import '../../../data/repositories/contracts/event_repository.dart';
 import '../../data/models/league.dart';
@@ -7,34 +8,31 @@ import '../../data/providers/api/api_exception.dart'; // Para manejar excepcione
 // Considera tener una clase de strings para mensajes: import '../../../config/strings/app_strings.dart';
 
 class HomeController extends GetxController {
-  // 1. Inyectar la dependencia del repositorio
-  // Get.find() buscará la instancia de EventRepository que registraste (ej. EventRepositoryRemote)
+  ///
   final EventRepository _eventRepository = Get.find<EventRepository>();
 
-  // 2. Variables observables para el estado de la UI
-  // Para la lista de todas las ligas
+  /// Para la lista de todas las ligas
   final RxList<League> allLeagues = <League>[].obs;
   final RxBool isLoadingLeagues = false.obs;
   final RxString leaguesError = ''.obs;
 
-  // Para la lista de partidos (ya sea por país o por liga)
+  /// Para la lista de partidos (ya sea por país o por liga)
   final RxList<MatchEvent> matches = <MatchEvent>[].obs;
   final RxBool isLoadingMatches = false.obs;
   final RxString matchesError = ''.obs;
-  final RxString currentSearchTerm = ''.obs; // Para mostrar qué se está buscando
-
-  // Para la búsqueda por país
-  final RxString selectedCountry = ''.obs; // Podría venir de un TextField o un selector
-
-  // Para la búsqueda por liga (si el usuario selecciona una liga)
-  final RxString selectedLeagueId = ''.obs;
-  final RxString selectedLeagueName = ''.obs; // Para mostrar en la UI
+  final RxString currentSearchTerm =
+      ''.obs; // Para mostrar qué se está buscando
 
   ///
-  final Rx<League?> selectedLeague = Rx<League?>(null); // Liga seleccionada en el Dropdown
-  // --- Para Partidos (ejemplo si quieres cargar partidos de la liga seleccionada) ---
-  final RxList<MatchEvent> matchesOfSelectedLeague = <MatchEvent>[].obs;
+  final RxString selectedCountry =
+      ''.obs; // Podría venir de un TextField o un selector
 
+  ///
+  final Rx<League?> selectedLeague = Rx<League?>(
+    null,
+  ); // Liga seleccionada en el Dropdown
+  ///
+  final Logger _logger = Logger();
 
   @override
   void onReady() {
@@ -42,15 +40,13 @@ class HomeController extends GetxController {
     fetchAllLeagues();
   }
 
-  // 3. Métodos para obtener datos
-
   /// Obtiene todas las ligas
   Future<void> fetchAllLeagues() async {
     isLoadingLeagues.value = true;
     leaguesError.value = '';
     currentSearchTerm.value = "Todas las ligas";
 
-    selectedLeague.value = null; // Resetea la liga seleccionada al recargar
+    selectedLeague.value = null;
     try {
       final List<League> leagues = await _eventRepository.getAllLeagues();
       if (leagues.isNotEmpty) {
@@ -62,46 +58,58 @@ class HomeController extends GetxController {
       leaguesError.value = "Error de API: ${e.message}";
     } catch (e) {
       leaguesError.value = "Ocurrió un error inesperado al cargar las ligas.";
-      print("Error en fetchAllLeagues: $e");
+      _logger.e("Error en fetchAllLeagues: $e");
     } finally {
       isLoadingLeagues.value = false;
     }
   }
-  // Método que se llama cuando una liga es seleccionada en el Dropdown
+
+  /// Método que se llama cuando una liga es seleccionada en el Dropdown
   void onLeagueSelected(League? league) {
     if (league != null) {
       selectedLeague.value = league;
-      print("Liga seleccionada: ${league.strLeague} (ID: ${league.idLeague})");
-      // Aquí puedes disparar la carga de partidos para la liga seleccionada
-      fetchMatchesForLeague(league.idLeague, league.strLeague);
+      _logger.i(
+        "Liga seleccionada: ${league.strLeague} (ID: ${league.idLeague})",
+      );
+      fetchMatchesByLeagueId(league.idLeague, league.strLeague);
+    } else {
+      // Si se deselecciona la liga (o se elige una opción "ninguna"),
+      // limpia los partidos y el término de búsqueda.
+      selectedLeague.value = null;
+      clearMatchesSearch();
     }
   }
-  ///Cargar partidos para la liga seleccionada
-     Future<void> fetchMatchesForLeague(String leagueId, String leagueName) async {
-       isLoadingMatches.value = true;
-       matchesError.value = '';
-       matchesOfSelectedLeague.clear();
-       // currentSearchTerm.value = "Partidos de la liga: $leagueName"; // Si tienes esta variable
 
-       try {
-         final List<MatchEvent> fetchedMatches = await _eventRepository.getNextEventsByLeagueId(
-           leagueId,
-           leagueName: leagueName,
-         );
-         if (fetchedMatches.isNotEmpty) {
-           matchesOfSelectedLeague.assignAll(fetchedMatches);
-         } else {
-           matchesError.value = "No se encontraron próximos partidos para la liga $leagueName.";
-         }
-       } on ApiException catch (e) {
-         matchesError.value = "Error de API: ${e.message}";
-       } catch (e) {
-         matchesError.value = "Ocurrió un error inesperado al buscar partidos por liga.";
-         print("Error en fetchMatchesByLeagueId: $e");
-       } finally {
-         isLoadingMatches.value = false;
-       }
-     }
+  ///Cargar partidos para la liga seleccionada
+  Future<void> fetchMatchesForLeague(String leagueId, String leagueName) async {
+    if (leagueId.trim().isEmpty) {
+      matchesError.value = "ID de liga no válido.";
+      return;
+    }
+    currentSearchTerm.value = "Partidos de la liga: $leagueName";
+    isLoadingMatches.value = true;
+    matchesError.value = '';
+    matches.clear(); // Limpiar resultados anteriores
+
+    try {
+      final List<MatchEvent> fetchedMatches = await _eventRepository
+          .getNextEventsByLeagueId(leagueId, leagueName: leagueName);
+      if (fetchedMatches.isNotEmpty) {
+        matches.assignAll(fetchedMatches);
+      } else {
+        matchesError.value =
+            "No se encontraron próximos partidos para la liga $leagueName.";
+      }
+    } on ApiException catch (e) {
+      matchesError.value = "Error de API: ${e.message}";
+    } catch (e) {
+      matchesError.value =
+          "Ocurrió un error inesperado al buscar partidos por liga.";
+      _logger.e("Error en fetchMatchesByLeagueId: $e");
+    } finally {
+      isLoadingMatches.value = false;
+    }
+  }
 
   /// Obtiene partidos para un nombre de país
   Future<void> fetchMatchesByCountry(String countryName) async {
@@ -116,16 +124,20 @@ class HomeController extends GetxController {
     matches.clear(); // Limpiar resultados anteriores
 
     try {
-      final List<MatchEvent> fetchedMatches = await _eventRepository.getEventsByCountry(selectedCountry.value);
+      final List<MatchEvent> fetchedMatches = await _eventRepository
+          .getEventsByCountry(selectedCountry.value);
       if (fetchedMatches.isNotEmpty) {
         matches.assignAll(fetchedMatches);
       } else {
-        matchesError.value = "No se encontraron partidos para ${selectedCountry.value}."; // AppStrings.noMatchesFoundForCountry(selectedCountry.value);
+        matchesError.value =
+            "No se encontraron partidos para ${selectedCountry.value}."; // AppStrings.noMatchesFoundForCountry(selectedCountry.value);
       }
     } on ApiException catch (e) {
-      matchesError.value = "Error de API: ${e.message}"; // AppStrings.apiErrorPrefix + e.message;
+      matchesError.value =
+          "Error de API: ${e.message}"; // AppStrings.apiErrorPrefix + e.message;
     } catch (e) {
-      matchesError.value = "Ocurrió un error inesperado al buscar partidos por país."; // AppStrings.unexpectedErrorSearchingMatches;
+      matchesError.value =
+          "Ocurrió un error inesperado al buscar partidos por país."; // AppStrings.unexpectedErrorSearchingMatches;
       print("Error en fetchMatchesByCountry: $e");
     } finally {
       isLoadingMatches.value = false;
@@ -133,35 +145,36 @@ class HomeController extends GetxController {
   }
 
   /// Obtiene partidos para una ID de liga específica
-  Future<void> fetchMatchesByLeagueId(String leagueId, String leagueName) async {
+  Future<void> fetchMatchesByLeagueId(
+    String leagueId,
+    String leagueName,
+  ) async {
     if (leagueId.trim().isEmpty) {
-      matchesError.value = "ID de liga no válido."; // AppStrings.invalidLeagueId;
+      matchesError.value = "ID de liga no válido.";
       return;
     }
-    selectedLeagueId.value = leagueId.trim();
-    selectedLeagueName.value = leagueName;
     currentSearchTerm.value = "Partidos de la liga: $leagueName";
     isLoadingMatches.value = true;
     matchesError.value = '';
-    matches.clear(); // Limpiar resultados anteriores
+    matches.clear();
+    selectedCountry.value = '';
 
     try {
-      // Pasamos leagueName para un posible enriquecimiento si el repositorio lo usa
-      final List<MatchEvent> fetchedMatches = await _eventRepository.getNextEventsByLeagueId(
-        selectedLeagueId.value,
-        leagueName: selectedLeagueName.value,
-        // countryName: podrías necesitar obtener el país de la liga si es relevante
-      );
+      final List<MatchEvent> fetchedMatches = await _eventRepository
+          .getNextEventsByLeagueId(leagueId, leagueName: leagueName);
       if (fetchedMatches.isNotEmpty) {
         matches.assignAll(fetchedMatches);
       } else {
-        matchesError.value = "No se encontraron próximos partidos para la liga $leagueName."; // AppStrings.noUpcomingMatchesForLeague(leagueName);
+        matchesError.value =
+            "No se encontraron próximos partidos para la liga $leagueName.";
       }
     } on ApiException catch (e) {
-      matchesError.value = "Error de API: ${e.message}"; // AppStrings.apiErrorPrefix + e.message;
+      matchesError.value = "Error de API: ${e.message}";
+      _logger.e("API Error en fetchMatchesByLeagueId: ${e.message}");
     } catch (e) {
-      matchesError.value = "Ocurrió un error inesperado al buscar partidos por liga."; // AppStrings.unexpectedErrorSearchingMatchesByLeague;
-      print("Error en fetchMatchesByLeagueId: $e");
+      matchesError.value =
+          "Ocurrió un error inesperado al buscar partidos por liga.";
+      _logger.e("Error en fetchMatchesByLeagueId: $e");
     } finally {
       isLoadingMatches.value = false;
     }
@@ -173,8 +186,6 @@ class HomeController extends GetxController {
     matchesError.value = '';
     currentSearchTerm.value = '';
     selectedCountry.value = '';
-    selectedLeagueId.value = '';
-    selectedLeagueName.value = '';
+    selectedLeague.value = null;
   }
 }
-
