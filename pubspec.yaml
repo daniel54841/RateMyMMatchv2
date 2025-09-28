@@ -37,6 +37,8 @@ dependencies:
   get: 4.7.2
   http: 1.5.0
   logger: 2.6.1
+  timezone: 0.10.1
+  intl: 0.20.2
 
 dev_dependencies:
   flutter_test:
