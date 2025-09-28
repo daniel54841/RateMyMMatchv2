@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-import 'package:rate_my_match_v2/initializer/initializeApi.dart';
+import 'package:rate_my_match_v2/initializer/initialize_api.dart';
+import 'package:rate_my_match_v2/initializer/initialize_languagues.dart';
 import 'package:rate_my_match_v2/theme/app_theme.dart';
 
 import 'navigation/app_pages.dart';
@@ -8,6 +9,7 @@ import 'navigation/app_pages.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await InitializeApi.initServices();
+  await InitializeLanguagues.initializeTimeZones();
   runApp(const MyApp());
 }
 
