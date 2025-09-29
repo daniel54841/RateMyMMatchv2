@@ -1,10 +1,12 @@
-// lib/app/modules/events/controllers/events_controller.dart
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:rate_my_match_v2/data/models/math_event.dart';
+import 'package:rate_my_match_v2/utils/images_utils.dart';
 import '../../../data/repositories/contracts/event_repository.dart';
 import '../../data/models/league.dart';
-import '../../data/providers/api/api_exception.dart'; // Para manejar excepciones de API
+import '../../data/providers/api/api_exception.dart';
+import '../../widgets/blinking_svg_icon.dart'; // Para manejar excepciones de API
 // Considera tener una clase de strings para mensajes: import '../../../config/strings/app_strings.dart';
 
 class HomeController extends GetxController {
@@ -93,7 +95,7 @@ class HomeController extends GetxController {
 
     try {
       final List<MatchEvent> fetchedMatches = await _eventRepository
-          .getEventDay(leagueName,day: '2025-09-28');
+          .getEventDay(leagueName, day: '2025-09-27');
       if (fetchedMatches.isNotEmpty) {
         matches.assignAll(fetchedMatches);
       } else {
@@ -144,42 +146,6 @@ class HomeController extends GetxController {
     }
   }
 
- /* /// Obtiene partidos para una ID de liga específica
-  Future<void> fetchMatchesByLeagueId(
-    String leagueId,
-    String leagueName,
-  ) async {
-    if (leagueId.trim().isEmpty) {
-      matchesError.value = "ID de liga no válido.";
-      return;
-    }
-    currentSearchTerm.value = leagueName;
-    isLoadingMatches.value = true;
-    matchesError.value = '';
-    matches.clear();
-    selectedCountry.value = '';
-
-    try {
-      final List<MatchEvent> fetchedMatches = await _eventRepository
-          .getEventDay(leagueId, leagueName: leagueName);
-      if (fetchedMatches.isNotEmpty) {
-        matches.assignAll(fetchedMatches);
-      } else {
-        matchesError.value =
-            "No se encontraron próximos partidos para la liga $leagueName.";
-      }
-    } on ApiException catch (e) {
-      matchesError.value = "Error de API: ${e.message}";
-      _logger.e("API Error en fetchMatchesByLeagueId: ${e.message}");
-    } catch (e) {
-      matchesError.value =
-          "Ocurrió un error inesperado al buscar partidos por liga.";
-      _logger.e("Error en fetchMatchesByLeagueId: $e");
-    } finally {
-      isLoadingMatches.value = false;
-    }
-  }*/
-
   /// Método para limpiar la búsqueda de partidos y errores
   void clearMatchesSearch() {
     matches.clear();
@@ -187,5 +153,20 @@ class HomeController extends GetxController {
     currentSearchTerm.value = '';
     selectedCountry.value = '';
     selectedLeague.value = null;
+  }
+
+  ///
+  Widget getStatusEvent({String? status}) {
+    if (status != null) {
+      if (status != 'Match Finished' &&
+          status != 'Match Postponed' &&
+          status != 'Not Started') {
+        return BlinkingSvgIcon(assetName: ImagesUtils.getIcons(name: 'live',));
+      } else {
+        return Text('');
+      }
+    } else {
+      return Text('');
+    }
   }
 }

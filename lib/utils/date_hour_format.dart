@@ -10,7 +10,7 @@ class DateHoutFormat{
   static String formatToHourMinute(String timeWithSeconds) {
     try {
       final DateFormat inputFormat = DateFormat("HH:mm:ss");
-      final DateTime parsedTime = inputFormat.parseStrict(timeWithSeconds);
+      final DateTime parsedTime = inputFormat.parseStrict(timeWithSeconds,);
 
       final DateFormat outputFormat = DateFormat("HH:mm");
 

@@ -2,15 +2,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rate_my_match_v2/data/models/league.dart';
+import 'package:rate_my_match_v2/widgets/away_team_play_item.dart';
 import 'package:rate_my_match_v2/widgets/math_item.dart';
 
 import '../../data/models/math_event.dart';
 import '../../theme/app_colors.dart';
+import '../../widgets/home_team_player.dart';
+import '../../widgets/team_play_item.dart';
 import 'home_controller.dart';
 
 ///
 class HomeView extends GetView<HomeController> {
-
   const HomeView({super.key});
 
   @override
@@ -79,8 +81,10 @@ class HomeView extends GetView<HomeController> {
                       }
 
                       return DropdownButtonFormField<League>(
+                        dropdownColor: Colors.black,
                         decoration: InputDecoration(
                           labelText: 'Selecciona una Liga',
+
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
@@ -105,6 +109,9 @@ class HomeView extends GetView<HomeController> {
                                   league
                                       .strLeague, // Muestra el nombre de la liga
                                   overflow: TextOverflow.ellipsis,
+                                  style: Get.textTheme.titleMedium?.copyWith(
+                                    color: AppColors.secondaryColor,
+                                  ),
                                 ),
                               );
                             })
@@ -164,7 +171,39 @@ class HomeView extends GetView<HomeController> {
                       itemCount: controller.matches.length,
                       itemBuilder: (context, index) {
                         final MatchEvent match = controller.matches[index];
-                        return MathItem(mathValue: match);
+                        return GestureDetector(
+                          onTap: () {
+                            Get.dialog(
+                              AlertDialog(
+                                title: Center(
+                                  child: Text(match.seasonInfo.leagueName,style: Get.textTheme.titleMedium?.copyWith(
+                                    color: AppColors.primaryColor,
+                                  ),),
+                                ),
+                                content: Row(
+                                  children: [
+                                    Expanded(
+                                      child: HomeTeamPlayItem(
+                                        teamName: match.teamInfo.homeTeamName,
+                                        teamBadgeUrl: match.teamInfo.homeTeamBadgeUrl,
+                                        score: int.parse(match.resultEvent.homeScore ?? '0'),
+                                      ),
+                                    ),
+
+                                    Expanded(
+                                      child: AwayTeamPlayItem(
+                                        teamName: match.teamInfo.awayTeamName,
+                                        teamBadgeUrl: match.teamInfo.awayTeamBadgeUrl,
+                                        score: int.parse(match.resultEvent.awayScore ?? '0'),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            );
+                          },
+                          child: MathItem(mathValue: match),
+                        );
                       },
                     ),
                     SizedBox(height: 10),

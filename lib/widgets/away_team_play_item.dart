@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:rate_my_match_v2/data/models/team_info.dart';
 
-class TeamPlayItem extends StatelessWidget {
+class AwayTeamPlayItem extends StatelessWidget {
   ///
   final String teamName;
   ///
   final String? teamBadgeUrl;
   ///
   final int score;
-   const TeamPlayItem({super.key, required this.teamName, required this.teamBadgeUrl, required this.score});
+  const AwayTeamPlayItem({super.key, required this.teamName, required this.teamBadgeUrl, required this.score});
 
   @override
   Widget build(BuildContext context) {
@@ -17,6 +17,13 @@ class TeamPlayItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
       child: Row(
         children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0), // Espacio entre nombre y score si no hay Spacer
+            child: Text(
+              '- ${score.toString()}',
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold), // Estilo para el score
+            ),
+          ),
           // Team Badge
           teamBadgeUrl != null && teamBadgeUrl!.isNotEmpty
               ? Image.network(
@@ -45,13 +52,7 @@ class TeamPlayItem extends StatelessWidget {
           // const Spacer(), // Esto se elimina si el nombre del equipo es `Expanded` y el score no.
 
           // Score (Alineado a la derecha)
-          Padding(
-            padding: const EdgeInsets.only(left: 8.0), // Espacio entre nombre y score si no hay Spacer
-            child: Text(
-              score.toString(),
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold), // Estilo para el score
-            ),
-          )
+
         ],
       ),
     );

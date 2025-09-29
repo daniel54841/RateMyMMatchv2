@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:rate_my_match_v2/theme/app_colors.dart';
 import 'package:rate_my_match_v2/utils/date_hour_format.dart';
 import 'package:rate_my_match_v2/widgets/team_play_item.dart';
 
 import '../data/models/math_event.dart';
+import '../view/home/home_controller.dart';
 
 class MathItem extends StatelessWidget {
+  ///
+  final HomeController controller = Get.find<HomeController>();
+  ///
   final MatchEvent mathValue;
 
   ///
-  const MathItem({super.key, required this.mathValue});
+   MathItem({super.key, required this.mathValue});
 
   @override
   Widget build(BuildContext context) {
@@ -20,6 +25,7 @@ class MathItem extends StatelessWidget {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
+
             Center(
               child: mathValue.seasonInfo.leagueBadgeUrl != null
                   ? Image.network(
@@ -32,21 +38,27 @@ class MathItem extends StatelessWidget {
             TeamPlayItem(
               teamName: mathValue.teamInfo.homeTeamName,
               teamBadgeUrl: mathValue.teamInfo.homeTeamBadgeUrl,
-              score: 0,
+              score: int.parse(mathValue.resultEvent.homeScore ?? '0'),
             ),
             SizedBox(height: 8),
             TeamPlayItem(
               teamName: mathValue.teamInfo.awayTeamName,
               teamBadgeUrl: mathValue.teamInfo.awayTeamBadgeUrl,
-              score: 0,
+              score: int.parse(mathValue.resultEvent.awayScore ?? '0'),
             ),
             SizedBox(height: 8),
             Divider(color: Colors.black),
             //localeventTime
             Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                '${DateHoutFormat.formatToHourMinute(mathValue.dateInfoEvent.localEventTime!)} ${DateHoutFormat.formatYearMonthDayToDayMonthYear(mathValue.dateInfoEvent.localEventDate!)}',
+              alignment: Alignment.centerRight,
+              child: Row(
+                children: [
+                  Text(
+                    '${DateHoutFormat.formatToHourMinute(mathValue.dateInfoEvent.localEventTime!)} ${DateHoutFormat.formatYearMonthDayToDayMonthYear(mathValue.dateInfoEvent.localEventDate!)}',
+                  ),
+                  SizedBox(width: 30,),
+                  controller.getStatusEvent(status: mathValue.event.status,),
+                ],
               ),
             ),
           ],

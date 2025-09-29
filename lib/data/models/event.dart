@@ -25,6 +25,7 @@ class Event {
           json['strFilename'] ??
           'Unknown Event', // Usar filename si strEvent es nulo
       sportType: json['strSport'] ?? 'Unknown Sport', // Esencial
+      status: json['strStatus'],
       postponedStatus:
           json['strPostponed'] ?? 'no', // Default a 'no' si es nulo
     );
