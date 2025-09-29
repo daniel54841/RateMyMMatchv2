@@ -71,10 +71,9 @@ class EventRepositoryRemote extends EventRepository{
         futureLeagueEventsOperations.add(
           // Pasamos el nombre de la liga y el país para un posible enriquecimiento
           // del objeto Match si tu Match.fromJson lo soporta.
-            getNextEventsByLeagueId(
-              league.idLeague,
-              leagueName: league.strLeague, // Para posible enriquecimiento
-              countryName: countryName,      // Para posible enriquecimiento
+            getEventDay(
+              league.strLeague,
+
             ).catchError((e) {
               // Si una llamada a getNextEventsByLeagueId falla, capturamos el error aquí
               // para que Future.wait no falle por completo. Devolvemos una lista vacía
@@ -131,11 +130,11 @@ class EventRepositoryRemote extends EventRepository{
   }
 
   @override
-  Future<List<MatchEvent>> getNextEventsByLeagueId(String leagueId, {String? leagueName, String? countryName}) async {
+  Future<List<MatchEvent>> getEventDay(String leagueName, {String? day}) async {
     try {
       final response = await _apiClient.get(
-        ApiEndpoints.nextEventsByLeagueId,
-        queryParameters: {'id': leagueId},
+        ApiEndpoints.eventDay,
+        queryParameters: {'d': day,'l':leagueName},
       );
 
       // Los eventos suelen estar en una clave "events"
@@ -147,11 +146,11 @@ class EventRepositoryRemote extends EventRepository{
         return [];
       }
     } on ApiException catch (e) {
-      _apiClient.logger.e("ApiException en getNextEventsByLeagueId para la liga $leagueId: $e");
+      _apiClient.logger.e("ApiException en getNextEventsByLeagueId para la liga $leagueName: $e");
       rethrow;
     } catch (e) {
-      _apiClient.logger.e("Error inesperado en getNextEventsByLeagueId para la liga $leagueId: $e");
-      throw Exception("No se pudieron obtener los eventos para la liga con ID '$leagueId'.");
+      _apiClient.logger.e("Error inesperado en getNextEventsByLeagueId para la liga $leagueName: $e");
+      throw Exception("No se pudieron obtener los eventos para la liga con ID '$leagueName'.");
     }
   }
 

@@ -71,7 +71,7 @@ class HomeController extends GetxController {
       _logger.i(
         "Liga seleccionada: ${league.strLeague} (ID: ${league.idLeague})",
       );
-      fetchMatchesByLeagueId(league.idLeague, league.strLeague);
+      fetchMatchesForLeague(league.idLeague, league.strLeague);
     } else {
       // Si se deselecciona la liga (o se elige una opción "ninguna"),
       // limpia los partidos y el término de búsqueda.
@@ -93,7 +93,7 @@ class HomeController extends GetxController {
 
     try {
       final List<MatchEvent> fetchedMatches = await _eventRepository
-          .getNextEventsByLeagueId(leagueId, leagueName: leagueName);
+          .getEventDay(leagueName,day: '2025-09-28');
       if (fetchedMatches.isNotEmpty) {
         matches.assignAll(fetchedMatches);
       } else {
@@ -144,7 +144,7 @@ class HomeController extends GetxController {
     }
   }
 
-  /// Obtiene partidos para una ID de liga específica
+ /* /// Obtiene partidos para una ID de liga específica
   Future<void> fetchMatchesByLeagueId(
     String leagueId,
     String leagueName,
@@ -161,7 +161,7 @@ class HomeController extends GetxController {
 
     try {
       final List<MatchEvent> fetchedMatches = await _eventRepository
-          .getNextEventsByLeagueId(leagueId, leagueName: leagueName);
+          .getEventDay(leagueId, leagueName: leagueName);
       if (fetchedMatches.isNotEmpty) {
         matches.assignAll(fetchedMatches);
       } else {
@@ -178,7 +178,7 @@ class HomeController extends GetxController {
     } finally {
       isLoadingMatches.value = false;
     }
-  }
+  }*/
 
   /// Método para limpiar la búsqueda de partidos y errores
   void clearMatchesSearch() {

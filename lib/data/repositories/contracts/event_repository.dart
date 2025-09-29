@@ -10,11 +10,8 @@ abstract class EventRepository{
   /// Opcionalmente puede recibir [leagueName] y [countryName] para enriquecer
   /// los objetos [MatchEvent] devueltos si esa información no viene directamente
   /// en la respuesta del endpoint de eventos de la liga.
-  Future<List<MatchEvent>> getNextEventsByLeagueId(
-      String leagueId, {
-        String? leagueName,
-        String? countryName,
-      });
+  Future<List<MatchEvent>> getEventDay(
+      String leagueName, {String? day});
   /// Obtiene todos los próximos eventos/partidos para un país específico.
   ///
   /// Esto implicará primero encontrar las ligas de ese país y luego

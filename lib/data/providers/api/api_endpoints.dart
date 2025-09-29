@@ -3,7 +3,7 @@ class ApiEndpoints{
   ///Obtención de todas las ligas disponibles
   static const String allLeagues = 'all_leagues.php';
   /// Obtención de proximos partidos/eventos
-  static const String nextEventsByLeagueId = "eventsnextleague.php";
+  static const String eventDay = "eventsday.php";
   /// Obtecion de partidos/eventos por fecha y liga
   /// Parametros: id={LEAGUE_ID}&s={SEASON_YEAR}
   static const String seasonEventsByLeagueId = "eventsseason.php";
