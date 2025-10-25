@@ -96,12 +96,16 @@ class EventRepositoryRemote extends EventRepository{
       // Esto requiere que Match.dateTimeDetails.eventDate y eventTime sean parseables a DateTime.
       try {
         allCountryEvents.sort((a, b) {
-          final aDateStr = a.dateInfoEvent.eventDate;
-          final bDateStr = b.dateInfoEvent.eventDate;
-          final aTimeStr = a.dateInfoEvent.eventTime ?? "00:00:00";
-          final bTimeStr = b.dateInfoEvent.eventTime ?? "00:00:00";
+          final aDateStr = a.dateInfoEvent?.eventDate;
+          final bDateStr = b.dateInfoEvent?.eventDate;
+          final aTimeStr = a.dateInfoEvent?.eventTime ?? "00:00:00";
+          final bTimeStr = b.dateInfoEvent?.eventTime ?? "00:00:00";
 
-          if (aDateStr.isEmpty || bDateStr.isEmpty) return 0;
+         if(aDateStr != null || bDateStr != null){
+           if (aDateStr!.isEmpty || bDateStr!.isEmpty) return 0;
+         }else{
+           return 0;
+         }
 
           try {
             DateTime dateA = DateTime.parse("$aDateStr $aTimeStr");

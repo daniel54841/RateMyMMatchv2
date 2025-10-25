@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rate_my_match_v2/data/models/league.dart';
+import 'package:rate_my_match_v2/utils/app_string.dart';
 import 'package:rate_my_match_v2/widgets/away_team_play_item.dart';
 import 'package:rate_my_match_v2/widgets/math_item.dart';
 
@@ -182,7 +183,7 @@ class HomeView extends GetView<HomeController> {
                             Get.dialog(
                               AlertDialog(
                                 title: Center(
-                                  child: Text(match.seasonInfo.leagueName,style: Get.textTheme.titleMedium?.copyWith(
+                                  child: Text(match.seasonInfo?.leagueName ?? 'Liga No disponible',style: Get.textTheme.titleMedium?.copyWith(
                                     color: AppColors.primaryColor,
                                   ),),
                                 ),
@@ -190,17 +191,17 @@ class HomeView extends GetView<HomeController> {
                                   children: [
                                     Expanded(
                                       child: HomeTeamPlayItem(
-                                        teamName: match.teamInfo.homeTeamName,
-                                        teamBadgeUrl: match.teamInfo.homeTeamBadgeUrl,
-                                        score: int.parse(match.resultEvent.homeScore ?? '0'),
+                                        teamName: match.teamInfo?.homeTeamName ?? AppString.homeTeamNull,
+                                        teamBadgeUrl: match.teamInfo?.homeTeamBadgeUrl ?? AppString.teamBadgeNull,
+                                        score: int.parse(match.resultEvent?.homeScore ?? '-'),
                                       ),
                                     ),
 
                                     Expanded(
                                       child: AwayTeamPlayItem(
-                                        teamName: match.teamInfo.awayTeamName,
-                                        teamBadgeUrl: match.teamInfo.awayTeamBadgeUrl,
-                                        score: int.parse(match.resultEvent.awayScore ?? '0'),
+                                        teamName: match.teamInfo?.awayTeamName ?? AppString.homeTeamNull,
+                                        teamBadgeUrl: match.teamInfo?.awayTeamBadgeUrl ?? AppString.teamBadgeNull,
+                                        score: int.parse(match.resultEvent?.awayScore ?? '-'),
                                       ),
                                     ),
                                   ],

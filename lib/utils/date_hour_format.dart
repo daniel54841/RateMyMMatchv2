@@ -1,4 +1,5 @@
 import 'package:logger/logger.dart';
+import 'package:rate_my_match_v2/utils/app_string.dart';
 import 'package:timezone/timezone.dart' as tz;
 import 'package:intl/intl.dart';
 
@@ -7,15 +8,16 @@ class DateHoutFormat{
   ///
   static final Logger _logger = Logger();
   ///
-  static String formatToHourMinute(String timeWithSeconds) {
+  static String formatToHourMinute(String? timeWithSeconds) {
     try {
-      final DateFormat inputFormat = DateFormat("HH:mm:ss");
-      final DateTime parsedTime = inputFormat.parseStrict(timeWithSeconds,);
-
-      final DateFormat outputFormat = DateFormat("HH:mm");
-
-
-      return outputFormat.format(parsedTime);
+      if(timeWithSeconds == null){
+        return AppString.dateTimeNull;
+      }else{
+        final DateFormat inputFormat = DateFormat("HH:mm:ss");
+        final DateTime parsedTime = inputFormat.parseStrict(timeWithSeconds,);
+        final DateFormat outputFormat = DateFormat("HH:mm");
+        return outputFormat.format(parsedTime);
+      }
 
     } on FormatException catch (e) {
       _logger.e("Error de formato al parsear '$timeWithSeconds': $e");
@@ -26,15 +28,19 @@ class DateHoutFormat{
     }
   }
   ///
-  static String formatYearMonthDayToDayMonthYear(String dateStringYMD) {
+  static String? formatYearMonthDayToDayMonthYear(String? dateStringYMD) {
     try {
-      final DateFormat inputFormat = DateFormat("yyyy-MM-dd");
+     if(dateStringYMD != null){
+       final DateFormat inputFormat = DateFormat("yyyy-MM-dd");
 
-      final DateTime parsedDate = inputFormat.parseStrict(dateStringYMD);
+       final DateTime parsedDate = inputFormat.parseStrict(dateStringYMD);
 
-     final DateFormat outputFormat = DateFormat("dd-MM-yyyy");
+       final DateFormat outputFormat = DateFormat("dd-MM-yyyy");
 
-      return outputFormat.format(parsedDate);
+       return outputFormat.format(parsedDate);
+     }else{
+       return AppString.dateTimeNull;
+     }
 
     } on FormatException catch (e) {
       _logger.e("Error de formato al parsear la fecha '$dateStringYMD': $e");

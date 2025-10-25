@@ -10,35 +10,35 @@ import 'event.dart'; // Para @required o required en versiones antiguas
 
 class MatchEvent {
   ///Identificador único del evento en TheSportsDB. Original: idEvent
-  final String id; //
+  final String? id; //
 
   // --- Información General del Evento ---
-  final Event event;
+  final Event? event;
 
   // --- Información de la Liga y Temporada ---
-  final LeagueSeasonInfo seasonInfo;
+  final LeagueSeasonInfo? seasonInfo;
 
   // --- Información de los Equipos ---
-  final TeamInfo teamInfo;
+  final TeamInfo? teamInfo;
   // --- Resultados y Puntuación ---
-  final ResultEvent resultEvent;
+  final ResultEvent? resultEvent;
   // --- Fecha y Hora ---
-  final DateInfoEvent dateInfoEvent;
+  final DateInfoEvent? dateInfoEvent;
   // --- Ubicación y Detalles Adicionales ---
-  final PlaceInfoEvent placeInfoEvent;
+  final PlaceInfoEvent? placeInfoEvent;
   // --- Multimedia y Redes Sociales ---
-  final MultimediaInfoEvent multimediaInfoEvent;
+  final MultimediaInfoEvent? multimediaInfoEvent;
 
   ///
   MatchEvent({
-    required this.id,
-    required this.event,
-    required this.seasonInfo,
-    required this.teamInfo,
-    required this.resultEvent,
-    required this.dateInfoEvent,
-    required this.placeInfoEvent,
-    required this.multimediaInfoEvent,
+    this.id,
+    this.event,
+    this.seasonInfo,
+    this.teamInfo,
+    this.resultEvent,
+    this.dateInfoEvent,
+    this.placeInfoEvent,
+    this.multimediaInfoEvent,
   });
 
   ///
