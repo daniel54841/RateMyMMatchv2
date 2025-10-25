@@ -60,7 +60,7 @@ class MathItem extends StatelessWidget {
               alignment: Alignment.centerRight,
               child: Row(
                 children: [
-                  Flexible(
+                  Expanded(
                     child: Text(
                       '${DateHoutFormat.formatToHourMinute(mathValue.dateInfoEvent?.localEventTime)} ${DateHoutFormat.formatYearMonthDayToDayMonthYear(mathValue.dateInfoEvent?.localEventDate )}',
                     ),
