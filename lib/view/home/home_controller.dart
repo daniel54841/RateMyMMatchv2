@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:logger/logger.dart';
 import 'package:rate_my_match_v2/data/models/math_event.dart';
+import 'package:rate_my_match_v2/utils/date_hour_format.dart';
 import 'package:rate_my_match_v2/utils/images_utils.dart';
 import '../../../data/repositories/contracts/event_repository.dart';
 import '../../data/models/league.dart';
@@ -98,7 +99,7 @@ class HomeController extends GetxController {
     try {
 
       final List<MatchEvent> fetchedMatches = await _eventRepository
-          .getEventDay(leagueName, day: '2025-09-27');
+          .getEventDay(leagueName, day: DateHoutFormat.toYYYYMMDD(selectedDate.value));
       if (fetchedMatches.isNotEmpty) {
         matches.assignAll(fetchedMatches);
       } else {
@@ -183,6 +184,7 @@ class HomeController extends GetxController {
     );
     if (picked != null && picked != selectedDate.value) {
       selectedDate.value = picked;
+      fetchMatchesForLeague(selectedLeague.value?.idLeague ?? '', selectedLeague.value?.strLeague ?? '');
     }
   }
 

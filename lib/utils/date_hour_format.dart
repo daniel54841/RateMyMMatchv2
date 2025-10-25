@@ -44,4 +44,21 @@ class DateHoutFormat{
       return "Error inesperado";
     }
   }
+  /// Convierte un objeto [DateTime] a un String con el formato 'yyyy-MM-dd'.
+  ///
+  /// Si la fecha de entrada es nula, devuelve un string vacío.
+  static String toYYYYMMDD(DateTime? date) {
+    // Si la fecha es nula, retornamos un string vacío para evitar errores.
+    if (date == null) {
+      return '';
+    }
+
+    // Crea el formateador con el patrón deseado.
+    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+
+    // Aplica el formato y retorna el string resultante.
+    return formatter.format(date);
+  }
+
+
 }
