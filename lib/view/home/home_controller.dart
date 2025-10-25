@@ -34,6 +34,8 @@ class HomeController extends GetxController {
     null,
   ); // Liga seleccionada en el Dropdown
   ///
+  var selectedDate = DateTime.now().obs;
+  ///
   final Logger _logger = Logger();
 
   @override
@@ -94,6 +96,7 @@ class HomeController extends GetxController {
     matches.clear(); // Limpiar resultados anteriores
 
     try {
+
       final List<MatchEvent> fetchedMatches = await _eventRepository
           .getEventDay(leagueName, day: '2025-09-27');
       if (fetchedMatches.isNotEmpty) {
@@ -169,4 +172,18 @@ class HomeController extends GetxController {
       return Text('');
     }
   }
+  ///
+  void showCalendar() async{
+    final DateTime? picked = await showDatePicker(
+      context: Get.context!,
+      initialDate: selectedDate.value,
+      firstDate: DateTime(2025),
+      lastDate: DateTime(2026),
+      locale: Get.locale,
+    );
+    if (picked != null && picked != selectedDate.value) {
+      selectedDate.value = picked;
+    }
+  }
+
 }

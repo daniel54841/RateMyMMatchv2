@@ -31,6 +31,12 @@ class HomeView extends GetView<HomeController> {
             icon: Icon(Icons.refresh, color: AppColors.textColor),
             onPressed: () {},
           ),
+          IconButton(
+            icon: Icon(Icons.calendar_month, color: AppColors.textColor),
+            onPressed: () {
+              controller.showCalendar();
+            },
+          ),
         ],
       ),
       body: Padding(
