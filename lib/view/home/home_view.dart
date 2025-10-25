@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:rate_my_match_v2/data/models/league.dart';
 import 'package:rate_my_match_v2/utils/app_string.dart';
+import 'package:rate_my_match_v2/utils/date_hour_format.dart';
 import 'package:rate_my_match_v2/widgets/away_team_play_item.dart';
 import 'package:rate_my_match_v2/widgets/math_item.dart';
 
@@ -166,11 +167,29 @@ class HomeView extends GetView<HomeController> {
                 return Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      controller.currentSearchTerm.value,
-                      style: Get.textTheme.titleMedium?.copyWith(
-                        color: AppColors.textColor,
-                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Text(
+                            controller.currentSearchTerm.value,
+                            style: Get.textTheme.titleMedium?.copyWith(
+                              color: AppColors.textColor,
+                            ),
+                          ),
+                        ),
+                        Expanded(
+                          child: Text(
+                            'Fecha: ${
+                              DateHoutFormat.toDDMMYYYY(
+                                  controller.selectedDate.value)
+                            }',
+                            style: Get.textTheme.titleMedium?.copyWith(
+                              color: AppColors.textColor,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                     SizedBox(height: 8),
                     ListView.builder(
@@ -183,25 +202,41 @@ class HomeView extends GetView<HomeController> {
                             Get.dialog(
                               AlertDialog(
                                 title: Center(
-                                  child: Text(match.seasonInfo?.leagueName ?? 'Liga No disponible',style: Get.textTheme.titleMedium?.copyWith(
-                                    color: AppColors.primaryColor,
-                                  ),),
+                                  child: Text(
+                                    match.seasonInfo?.leagueName ??
+                                        'Liga No disponible',
+                                    style: Get.textTheme.titleMedium?.copyWith(
+                                      color: AppColors.primaryColor,
+                                    ),
+                                  ),
                                 ),
                                 content: Row(
                                   children: [
                                     Expanded(
                                       child: HomeTeamPlayItem(
-                                        teamName: match.teamInfo?.homeTeamName ?? AppString.homeTeamNull,
-                                        teamBadgeUrl: match.teamInfo?.homeTeamBadgeUrl ?? AppString.teamBadgeNull,
-                                        score: int.parse(match.resultEvent?.homeScore ?? '-'),
+                                        teamName:
+                                            match.teamInfo?.homeTeamName ??
+                                            AppString.homeTeamNull,
+                                        teamBadgeUrl:
+                                            match.teamInfo?.homeTeamBadgeUrl ??
+                                            AppString.teamBadgeNull,
+                                        score: int.parse(
+                                          match.resultEvent?.homeScore ?? '0',
+                                        ),
                                       ),
                                     ),
 
                                     Expanded(
                                       child: AwayTeamPlayItem(
-                                        teamName: match.teamInfo?.awayTeamName ?? AppString.homeTeamNull,
-                                        teamBadgeUrl: match.teamInfo?.awayTeamBadgeUrl ?? AppString.teamBadgeNull,
-                                        score: int.parse(match.resultEvent?.awayScore ?? '-'),
+                                        teamName:
+                                            match.teamInfo?.awayTeamName ??
+                                            AppString.homeTeamNull,
+                                        teamBadgeUrl:
+                                            match.teamInfo?.awayTeamBadgeUrl ??
+                                            AppString.teamBadgeNull,
+                                        score: int.parse(
+                                          match.resultEvent?.awayScore ?? '0',
+                                        ),
                                       ),
                                     ),
                                   ],
